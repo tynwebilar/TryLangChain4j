@@ -54,4 +54,9 @@ public class ChatService {
         return aiResponse;
     }
 
-}
+    // 创建新对话
+    public void createNewChat(String userId) {
+        myChatMemoryStore.deleteMessages(userId);
+    }
+
+} 

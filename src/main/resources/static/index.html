@@ -39,6 +39,25 @@
             text-align: center;
             font-size: 24px;
             font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .new-chat-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .new-chat-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
         }
 
         .chat-messages {
@@ -185,7 +204,9 @@
 <body>
     <div class="chat-container">
         <div class="chat-header">
-            🤖 AI客服助手
+            <button class="new-chat-btn" onclick="createNewChat()">🆕 新建对话</button>
+            <div>🤖 AI客服助手</div>
+            <div style="width: 100px;"></div>
         </div>
         
         <div class="chat-messages" id="chatMessages">
@@ -244,6 +265,35 @@
             typingIndicator.style.display = show ? 'block' : 'none';
             if (show) {
                 chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        // 创建新对话
+        async function createNewChat() {
+            try {
+                const response = await fetch('/api/chat/new', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                });
+
+                if (!response.ok) {
+                    throw new Error('网络请求失败');
+                }
+
+                const data = await response.json();
+                
+                // 清空聊天界面
+                chatMessages.innerHTML = '<div class="welcome-message">您好！我是您的AI客服助手，有什么可以帮助您的吗？</div>';
+                
+                // 显示成功消息
+                addMessage('新对话已创建，让我们开始新的对话吧！', false);
+
+            } catch (error) {
+                console.error('创建新对话失败:', error);
+                addMessage('抱歉，创建新对话时出现问题，请稍后重试。', false);
             }
         }
 
