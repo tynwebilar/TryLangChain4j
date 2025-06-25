@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI客服助手</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -96,6 +97,111 @@
             color: #333;
             border: 1px solid #e0e0e0;
             border-bottom-left-radius: 5px;
+        }
+
+        /* Markdown样式 */
+        .message.bot .message-content h1,
+        .message.bot .message-content h2,
+        .message.bot .message-content h3,
+        .message.bot .message-content h4,
+        .message.bot .message-content h5,
+        .message.bot .message-content h6 {
+            margin: 10px 0 5px 0;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .message.bot .message-content h1 { font-size: 1.5em; }
+        .message.bot .message-content h2 { font-size: 1.3em; }
+        .message.bot .message-content h3 { font-size: 1.1em; }
+
+        .message.bot .message-content p {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .message.bot .message-content ul,
+        .message.bot .message-content ol {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .message.bot .message-content li {
+            margin: 4px 0;
+        }
+
+        .message.bot .message-content code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+
+        .message.bot .message-content pre {
+            background: #f8f8f8;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 10px 0;
+            border: 1px solid #e0e0e0;
+        }
+
+        .message.bot .message-content pre code {
+            background: none;
+            padding: 0;
+            color: #333;
+        }
+
+        .message.bot .message-content blockquote {
+            border-left: 4px solid #667eea;
+            margin: 10px 0;
+            padding-left: 15px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .message.bot .message-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+
+        .message.bot .message-content th,
+        .message.bot .message-content td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .message.bot .message-content th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .message.bot .message-content a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .message.bot .message-content a:hover {
+            text-decoration: underline;
+        }
+
+        .message.bot .message-content strong {
+            font-weight: bold;
+        }
+
+        .message.bot .message-content em {
+            font-style: italic;
+        }
+
+        .message.bot .message-content hr {
+            border: none;
+            border-top: 1px solid #e0e0e0;
+            margin: 15px 0;
         }
 
         .message-avatar {
@@ -230,6 +336,13 @@
     </div>
 
     <script>
+        // 配置marked.js
+        marked.setOptions({
+            breaks: true,
+            gfm: true,
+            sanitize: false
+        });
+
         const chatMessages = document.getElementById('chatMessages');
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
@@ -246,7 +359,14 @@
             
             const messageContent = document.createElement('div');
             messageContent.className = 'message-content';
-            messageContent.textContent = content;
+            
+            if (isUser) {
+                // 用户消息保持纯文本
+                messageContent.textContent = content;
+            } else {
+                // AI消息支持Markdown格式
+                messageContent.innerHTML = marked.parse(content);
+            }
             
             if (isUser) {
                 messageDiv.appendChild(messageContent);
